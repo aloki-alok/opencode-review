@@ -4,8 +4,9 @@ from __future__ import annotations
 
 from typing import NamedTuple
 
-# (changed code lines up to, seconds). A one-line fix must not walk to the big-PR cap.
-TIERS = ((20, 90), (300, 180))
+# (changed code lines up to, seconds). A one-line fix must not walk to the big-PR cap. Above it, a
+# 196-line PR whose turns ran about 25 s each still timed out at 180 s, so everything gets the max.
+TIERS = ((20, 90),)
 LARGEST = 240  # with a 60 s wrap-up and the second check, the worst case fits a 10 minute job
 MIN_TURNS = 3
 

@@ -319,6 +319,32 @@ class ActionTest(unittest.TestCase):
         self.assertEqual(cfg['agent']['review']['steps'], 6)
         self.assertIn('90 s', self.log)
 
+    def push_branch(self, files):
+        """A PR head off the base that changes only `files`."""
+        git(self.work, 'checkout', '-qb', 'other', self.base)
+        for path, body in files.items():
+            self.write(self.work, path, body)
+        git(self.work, 'add', '-A')
+        git(self.work, 'commit', '-qm', 'other')
+        head = git(self.work, 'rev-parse', 'HEAD')
+        git(self.work, 'push', '-q', str(self.bare), 'other')
+        self.gh.pulls[7] = self.pr(head={'sha': head, 'repo': {'full_name': REPO}})
+        return head
+
+    def test_pr_without_code_is_skipped(self):
+        head = self.push_branch({'docs/page.mdx': 'new page\n', '.github/workflows/ci.yml': 'on: push\n'})
+        log = self.run_action(
+            'pull_request', self.pr_event(head={'sha': head, 'repo': {'full_name': REPO}}), {'review': FOUND}
+        )
+        self.assertIn('skip: no code changed', log)
+        self.assertEqual(self.calls_made(), [])
+        self.assertEqual(self.review_comments(), [])
+
+    def test_oc_review_on_a_pr_without_code_still_runs(self):
+        self.push_branch({'.github/workflows/ci.yml': 'on: push\n'})
+        self.run_action('issue_comment', self.comment_event('/oc review'), {'review': FOUND, 'verify': REAL})
+        self.assertEqual(len(self.review_comments()), 1)
+
     def test_stale_head_does_not_post(self):
         # A newer push landed while this review ran: the newer run owns the comment.
         self.gh.pulls[7] = self.pr(head={'sha': 'f' * 40, 'repo': {'full_name': REPO}})

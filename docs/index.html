@@ -161,7 +161,7 @@ jobs:
   <li><b>Refute pass:</b> a second OpenCode run tries to prove each finding wrong. Only the ones that survive are posted.</li>
   <li>The comment is written and edited in place. The job summary shows times, turns and the model.</li>
 </ol>
-<p>Time is sized to the change: 90 seconds up to 20 changed code lines, 180 up to 300, and 240 for anything bigger. If a pass runs out of time, OpenCode is stopped and asked for what it found so far, so work is not thrown away. A new push cancels the review of the old commit.</p>
+<p>Time is sized to the change: 90 seconds up to 20 changed code lines, and 240 for anything bigger. If a pass runs out of time, OpenCode is stopped and asked for what it found so far, so work is not thrown away. A new push cancels the review of the old commit.</p>
 
 <h3>Reading the comment</h3>
 <div class="wrap-table"><table>
@@ -178,7 +178,7 @@ jobs:
   <li><b>The model only reads.</b> Every OpenCode tool is denied except read, glob, grep and list. Reads outside the checkout are denied, and so are symlinks that lead out of it.</li>
   <li><b>The pull request can't change the reviewer.</b> The action's code and prompts come from its pinned version. The PR's <code>opencode.json</code> and <code>.opencode/</code> folder are removed before OpenCode starts.</li>
   <li><b>Secrets stay out of reach.</b> OpenCode gets only the model key. The GitHub token is never in its environment and never written to disk. Logs mask the key.</li>
-  <li><b>Only members trigger it.</b> Bot comments, drafts, Dependabot and fork pull requests are skipped.</li>
+  <li><b>Only members trigger it.</b> Bot comments, drafts, Dependabot and fork pull requests are skipped, and so is a pull request that changes no code.</li>
   <li><b>Prompt injection</b> can at worst produce a misleading comment, because the model can't act. Treat the review as advice, never as an approval gate.</li>
 </ul>
 <p>Full details in <a href="https://github.com/aloki-alok/opencode-review/blob/main/SECURITY.md">SECURITY.md</a>.</p>

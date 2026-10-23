@@ -13,8 +13,8 @@ class BudgetTest(unittest.TestCase):
 
     def test_tiers(self):
         self.assertEqual(find_budget(20, 14).seconds, 90)
-        self.assertEqual(find_budget(21, 14).seconds, 180)
-        self.assertEqual(find_budget(300, 14).seconds, 180)
+        # Measured: a 196-line PR's turns ran about 25 s each and hit a 180 s cap (docs #154).
+        self.assertEqual(find_budget(21, 14).seconds, 240)
         self.assertEqual(find_budget(301, 14).seconds, 240)
         self.assertEqual(find_budget(50_000, 14).seconds, 240)
 

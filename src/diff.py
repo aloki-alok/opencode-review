@@ -49,9 +49,11 @@ GENERATED = (
     '*.min.css',
     '*.map',
 )
+# Prose carries none of the defects the reviewer looks for, and makes up most of a docs PR.
+PROSE = ('*.md', '*.mdx', '*.txt', '*.rst')
 
 CODE_SPECS = [f':(glob)**/*.{ext}' for ext in CODE]
-SKIP_SPECS = [f':(exclude,glob)**/{name}' for name in GENERATED]
+SKIP_SPECS = [f':(exclude,glob)**/{name}' for name in GENERATED + PROSE]
 
 
 def build(repo, merge_base, head):

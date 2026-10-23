@@ -75,10 +75,21 @@ class DiffTest(unittest.TestCase):
         self.assertEqual(changed, 1)
 
     def test_non_code_is_in_the_patch_but_not_counted(self):
-        self.write('README.md', 'hello\nworld\n')
+        self.write('deploy/config.yml', 'replicas: 2\n')
         patch, changed = build(self.repo, self.base, self.commit())
-        self.assertIn('+world', patch)
+        self.assertIn('+replicas: 2', patch)
         self.assertEqual(changed, 0)
+
+    def test_prose_is_left_out(self):
+        # Doc pages carry no defect the reviewer looks for, and a docs PR is mostly prose.
+        self.write('README.md', 'hello\nworld\n')
+        self.write('docs/guide.mdx', 'PROSE\n')
+        self.write('notes.txt', 'PROSE\n')
+        self.write('app/calc.py', 'def add(a, b):\n    x = 1\n    y = 2\n    z = 3\n    return a - b\n')
+        patch, _ = build(self.repo, self.base, self.commit())
+        self.assertNotIn('world', patch)
+        self.assertNotIn('PROSE', patch)
+        self.assertIn('app/calc.py', patch)
 
 
 if __name__ == '__main__':

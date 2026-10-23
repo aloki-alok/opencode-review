@@ -117,7 +117,7 @@ All optional except `model` and `api-key`.
 | `trigger` | `/oc` | Command word. If you change it, change the `if:` in the workflow too. |
 | `guide-path` | `.github/opencode-review/guide.md` | Repo guide, read from the base branch. |
 | `max-findings` | `5` | Most findings in one comment. |
-| `review-budget` | `auto` | `auto` sizes the review to the change: 90 s up to 20 changed code lines, 180 s up to 300, else 240 s. Or `turns:seconds`. |
+| `review-budget` | `auto` | `auto` sizes the review to the change: 90 s up to 20 changed code lines, else 240 s. Or `turns:seconds`. |
 | `verify-budget` | `auto` | `turns:seconds` for the second pass. `auto` is 120 s. |
 | `ask-budget` | `16:240` | `turns:seconds` for an answer. |
 | `turn-p90` | `18` | Seconds one model turn takes at p90. Raise it for a slower model. |
@@ -151,7 +151,8 @@ side.
 ## How it works
 
 1. The action fetches the PR's head, its base and their merge base, and builds the diff. Lockfiles,
-   translations and minified files are left out.
+   translations, minified files and prose (`.md`, `.mdx`, `.txt`, `.rst`) are left out. A PR that
+   changes no code is skipped. Comment `/oc review` to review it anyway.
 2. **Find pass:** OpenCode reads the diff, follows callers and types through the repo, and lists
    the defects it can back with a concrete scenario.
 3. **Refute pass:** a second OpenCode run tries to prove each finding wrong. Only the ones that

@@ -217,6 +217,8 @@ def _key_failure(env, log, key):
 
 def _review(ctx, pr, head, base, merge_base, failure):
     env, log, gh, job = ctx['env'], ctx['log'], ctx['gh'], ctx['job']
+    if env['GITHUB_EVENT_NAME'] == 'pull_request' and not build(ctx['code'], merge_base, head)[1]:
+        return _skip(env, log, 'no code changed (comment /oc review to run it anyway)')
     max_findings = int(env.get('OC_MAX_FINDINGS') or 5)
     if failure:
         outcome = Outcome(head, 'failed', None, 'skipped', None, max_findings, failure)
