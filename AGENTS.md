@@ -6,7 +6,6 @@ opencode-review is a GitHub Action that reviews pull requests and answers `/oc` 
 
 - Test: `cd tests && python3 -m unittest -v` (131 tests, about 100 seconds, 2 skipped)
 - Test one file: `cd tests && python3 -m unittest test_render -v`
-- Run the action entry point: `python3 -I src/main.py` (needs the `INPUT_*` and GitHub env the action sets, see `action.yml`)
 
 Tests use a fake GitHub (`tests/fake_github.py`) and a fake OpenCode (`tests/fake_opencode.py`). They need no network and no key.
 
